@@ -6,7 +6,7 @@ import pendulum as pm
 import random
 
 
-class workstack():
+class WorkStack():
     """
     Stack of Tasks that represents work over time
     """
@@ -326,4 +326,4 @@ class Task():
         }
 
 
-ws = workstack
+ws = WorkStack
