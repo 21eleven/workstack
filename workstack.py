@@ -58,6 +58,7 @@ class workstack():
         self.stack.append(self.array[-1])
         self.log(
             f"💯 pushed {task.type} on to stack 💯 [{self.roll_emoji()}]", ago=ago)
+        self.save
         return self
 
     def log(self, msg, ago=0):
@@ -130,6 +131,25 @@ class workstack():
         self.stack.append(self.array[-1])
         self.log(
             f"💯 pushed {task.type} on to stack 💯 [{self.roll_emoji()}]", ago)
+
+    def calculate_task_duration(self):
+        completed = [t for t in self.array if t.end != None]
+        rank = 1
+        while (None in [t.duration for t in completed]):
+            for t in completed:
+                above_tasks = [
+                    task for task in self.array if task.start > t.start and task.start < t.end]
+                above_duration = [task.duration for task in above_tasks]
+                for above in above_tasks:
+                    assert above.end < t.end
+                if len(above_tasks) == 0:
+                    t.duration = (t.end - t.start).total_hours()
+                    t.rank = rank
+                elif None not in above_duration:
+                    t.duration = (t.end - t.start).total_hours() - \
+                        sum(above_duration)
+                    t.rank = rank
+            rank += 1
 
     def worklog_notebook_markdowncell(): pass
     def to_json(self): pass
