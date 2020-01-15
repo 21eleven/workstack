@@ -58,7 +58,7 @@ class workstack():
         self.stack.append(self.array[-1])
         self.log(
             f"💯 pushed {task.type} on to stack 💯 [{self.roll_emoji()}]", ago=ago)
-        self.save
+        self.save()
         return self
 
     def log(self, msg, ago=0):
