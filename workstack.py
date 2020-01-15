@@ -141,7 +141,7 @@ class workstack():
                     task for task in self.array if task.start > t.start and task.start < t.end]
                 above_duration = [task.duration for task in above_tasks]
                 for above in above_tasks:
-                    assert above.end < t.end
+                    assert above.end <= t.end
                 if len(above_tasks) == 0:
                     t.duration = (t.end - t.start).total_hours()
                     t.rank = rank
