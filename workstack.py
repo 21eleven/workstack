@@ -271,6 +271,37 @@ class WorkStack():
         """)
 
 
+def get_notebook_name():
+    """
+    Return the full path of the jupyter notebook.
+    """
+    import json
+    import os.path
+    import re
+    import ipykernel
+    import requests
+    from requests.compat import urljoin
+    try:  # Python 3 (see Edit2 below for why this may not work in Python 2)
+        from notebook.notebookapp import list_running_servers
+    except ImportError:  # Python 2
+        import warnings
+        from IPython.utils.shimmodule import ShimWarning
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=ShimWarning)
+            from IPython.html.notebookapp import list_running_servers
+    ###
+    kernel_id = re.search('kernel-(.*).json',
+                          ipykernel.connect.get_connection_file()).group(1)
+    servers = list_running_servers()
+    for ss in servers:
+        response = requests.get(urljoin(ss['url'], 'api/sessions'),
+                                params={'token': ss.get('token', '')})
+        for nn in json.loads(response.text):
+            if nn['kernel']['id'] == kernel_id:
+                relative_path = nn['notebook']['path']
+                return os.path.join(ss['notebook_dir'], relative_path)
+
+
 class Task():
     def __init__(self, work_type, ago=0, tags=[]):
         self.type = work_type
@@ -301,7 +332,7 @@ class Task():
         task.worklog = data["worklog"]
         task.tags = data["tags"]
         task.duration = data["duration"]
-        task.rank = data["ran"]
+        task.rank = data["rank"]
         return task
 
     def __repr__(self):
