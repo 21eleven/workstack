@@ -131,6 +131,7 @@ class WorkStack():
         self.stack.append(self.array[-1])
         self.log(
             f"💯 pushed {task.type} on to stack 💯 [{self.roll_emoji()}]", ago)
+        return self
 
     def calculate_task_duration(self):
         completed = [t for t in self.array if t.end != None]
