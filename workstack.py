@@ -216,7 +216,7 @@ class WorkStack():
         return output
 
     def _load_metafile(self):
-        metafile = "/home/noah/gits/jupyterlab/workstack/meta.json"
+        metafile = str(config.meta_file)  # contains a list of emojis
         with open(metafile, "r") as mf:
             return json.load(mf)
 
@@ -259,17 +259,6 @@ class WorkStack():
 
     def name_x_food_emoji(self, x=10, return_list=False):
         return self.name_x_emoji(x, return_list, category='food')
-
-    def help(self):
-        print("""
-        .h, .help:
-            print this help info
-        .pt, .print_tasks:
-            print a ranked list of the most common
-            task types
-        .a, .push_task:
-            add a task to the stack
-        """)
 
 
 def get_notebook_name():
