@@ -154,6 +154,12 @@ class WorkStack():
                     t.rank = rank
             rank += 1
 
+        for t in self.array:
+            other_tasks = [task for task in self.array if task != t]
+            below_tasks = [below for below in other_tasks if
+                           below.start < t.start and below.end >= t.end]
+            t.rank = len(below_tasks)
+
     def graph(self):
         graph_start = pm.datetime(self.array[0].start.year, self.array[0].start.month,
                                   self.array[0].start.day, self.array[0].start.hour, tz=self.array[0].start.timezone)
