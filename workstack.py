@@ -23,7 +23,6 @@ class WorkStack():
             self.log("🚀 workstack initialized 🚀", ago)
         else:
             self._load_json()
-        global wl
         wl = self.log
 
     # i should have functions that track some data points for the day
@@ -134,6 +133,9 @@ class WorkStack():
         return self
 
     def calculate_task_duration(self):
+        for t in self.array:
+            t.duration = None
+            t.rank = None
         completed = [t for t in self.array if t.end != None]
         rank = 1
         while (None in [t.duration for t in completed]):
@@ -143,14 +145,19 @@ class WorkStack():
                 above_duration = [task.duration for task in above_tasks]
                 for above in above_tasks:
                     assert above.end <= t.end
-                if len(above_tasks) == 0:
+                if len(above_tasks) == 0 and t.duration == None:
                     t.duration = (t.end - t.start).total_hours()
                     t.rank = rank
-                elif None not in above_duration:
+                elif None not in above_duration and t.duration == None:
                     t.duration = (t.end - t.start).total_hours() - \
                         sum(above_duration)
                     t.rank = rank
             rank += 1
+
+    def graph(self):
+        graph_start = pm.datetime(self.array[0].start.year, self.array[0].start.month,
+                                  self.array[0].start.day, self.array[0].start.hour, tz=self.array[0].start.timezone)
+        print(graph_start)
 
     def worklog_notebook_markdowncell(): pass
     def to_json(self): pass
