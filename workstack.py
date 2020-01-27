@@ -133,23 +133,28 @@ class WorkStack():
         return self
 
     def calculate_task_duration(self):
+        t_now = pm.now()
         for t in self.array:
             t.duration = None
             t.rank = None
-        completed = [t for t in self.array if t.end != None]
+            if t.end == None:
+                t._end = t_now
+            else:
+                t._end = t.end
+        completed = [t for t in self.array if t._end != None]
         rank = 1
         while (None in [t.duration for t in completed]):
             for t in completed:
                 above_tasks = [
-                    task for task in self.array if task.start > t.start and task.start < t.end]
+                    task for task in self.array if task.start > t.start and task.start < t._end]
                 above_duration = [task.duration for task in above_tasks]
                 for above in above_tasks:
-                    assert above.end <= t.end
+                    assert above._end <= t._end
                 if len(above_tasks) == 0 and t.duration == None:
-                    t.duration = (t.end - t.start).total_hours()
+                    t.duration = (t._end - t.start).total_hours()
                     t.rank = rank
                 elif None not in above_duration and t.duration == None:
-                    t.duration = (t.end - t.start).total_hours() - \
+                    t.duration = (t._end - t.start).total_hours() - \
                         sum(above_duration)
                     t.rank = rank
             rank += 1
@@ -157,7 +162,7 @@ class WorkStack():
         for t in self.array:
             other_tasks = [task for task in self.array if task != t]
             below_tasks = [below for below in other_tasks if
-                           below.start < t.start and below.end >= t.end]
+                           below.start < t.start and below._end >= t._end]
             t.rank = len(below_tasks)
 
     def graph(self):
