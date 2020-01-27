@@ -21,8 +21,15 @@ class WorkStack():
             self.stack = [self.array[-1]]
             self.yyyymmdd = self.top().start.format("YYYYMMDD")
             self.log("🚀 workstack initialized 🚀", ago)
+            days_old = (pm.now().date() - pm.date(*config.birthday)).days
+            days_until = (pm.date(*config.old_age) - pm.now().date()).days
+            self.log(
+                f"{days_old} days since {pm.date(*config.birthday).format('MM/DD/YYYY')}")
+            self.log(
+                f"{days_until} days until {pm.date(*config.old_age).format('MM/DD/YYYY')}")
+            self.log
         else:
-            self._load_json()
+            self.load_json()
         wl = self.log
 
     # i should have functions that track some data points for the day
