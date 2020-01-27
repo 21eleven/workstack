@@ -169,6 +169,13 @@ class WorkStack():
         import matplotlib.pyplot as plt
         from matplotlib import cm
 
+        def get_color(n):
+            """
+            https://matplotlib.org/tutorials/colors/colormaps.html
+            """
+            # return cm.tab20c(n*2)
+            return cm.Set3(n)
+
         graph_start = pm.datetime(self.array[0].start.year, self.array[0].start.month,
                                   self.array[0].start.day, self.array[0].start.hour, tz=self.array[0].start.timezone)
         type_list = list(set([t.type for t in self.array]))
@@ -185,7 +192,7 @@ class WorkStack():
         for t in self.array:
             bar = ((t.start - graph_start).in_seconds(),
                    (t._end-t.start).in_seconds())
-            color = cm.tab20c(type_list.index(t.type)*2)
+            color = get_color(type_list.index(t.type))
             ranks[t.rank].append(bar)
             rank_colors[t.rank].append(color)
 
@@ -213,6 +220,13 @@ class WorkStack():
         ax.set_xticks(ticks)
         ax.set_xticklabels(labels)
         ax.grid(True)
+
+        import matplotlib.patches as mpatch
+        proxy_artists = [mpatch.Rectangle(
+            (0, 0), 1, 1, fc=get_color(i)) for i, v in enumerate(type_list)]
+        legend_labels = [t for t in type_list]
+        ax.legend(proxy_artists, legend_labels)
+
         plt.show()
 
     def worklog_notebook_markdowncell(): pass
