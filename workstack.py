@@ -166,9 +166,54 @@ class WorkStack():
             t.rank = len(below_tasks)
 
     def graph(self):
+        import matplotlib.pyplot as plt
+        from matplotlib import cm
+
         graph_start = pm.datetime(self.array[0].start.year, self.array[0].start.month,
                                   self.array[0].start.day, self.array[0].start.hour, tz=self.array[0].start.timezone)
-        print(graph_start)
+        type_list = list(set([t.type for t in self.array]))
+
+        ranks = [[] for _ in list(set([t.rank for t in self.array]))]
+        rank_colors = [[] for _ in list(set([t.rank for t in self.array]))]
+
+        bar_height = 6
+        bar_width = 5
+
+        self.calculate_task_duration()
+        fig, ax = plt.subplots(figsize=(20, 10))
+        # plt.figure()
+        for t in self.array:
+            bar = ((t.start - graph_start).in_seconds(),
+                   (t._end-t.start).in_seconds())
+            color = cm.tab20c(type_list.index(t.type)*2)
+            ranks[t.rank].append(bar)
+            rank_colors[t.rank].append(color)
+
+        for i, r in enumerate(ranks):
+            ax.broken_barh(r, (bar_height, bar_width),
+                           facecolors=rank_colors[i], ec="black")
+            bar_height += 6
+
+        ticks = []
+        labels = []
+        starts = [t.start for t in self.array]
+        ends = [t.end for t in self.array]
+        tick = graph_start
+        if None not in ends:
+            latest_time = max(ends)
+        else:
+            latest_time = pm.now()
+        while True:
+            ticks.append((tick-graph_start).in_seconds())
+            labels.append(tick.format("hh:mm"))
+            tick = tick.add(minutes=30)
+            if (tick - latest_time).in_minutes() >= 45:
+                break
+
+        ax.set_xticks(ticks)
+        ax.set_xticklabels(labels)
+        ax.grid(True)
+        plt.show()
 
     def worklog_notebook_markdowncell(): pass
     def to_json(self): pass
