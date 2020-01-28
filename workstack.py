@@ -24,9 +24,9 @@ class WorkStack():
             days_old = (pm.now().date() - pm.date(*config.birthday)).days
             days_until = (pm.date(*config.old_age) - pm.now().date()).days
             self.log(
-                f"{days_old} days since {pm.date(*config.birthday).format('MM/DD/YYYY')}")
+                f"{days_old} days since {pm.date(*config.birthday).format('MM/DD/YYYY')}", ago)
             self.log(
-                f"{days_until} days until {pm.date(*config.old_age).format('MM/DD/YYYY')}")
+                f"{days_until} days until {pm.date(*config.old_age).format('MM/DD/YYYY')}", ago)
             self.log
         else:
             self.load_json()
