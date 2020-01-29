@@ -29,7 +29,7 @@ class WorkStack():
                 f"{days_until} days until {pm.date(*config.old_age).format('MM/DD/YYYY')}", ago)
             self.log
         else:
-            self.load_json()
+            self._load_json()
         wl = self.log
 
     # i should have functions that track some data points for the day
