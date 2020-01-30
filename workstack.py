@@ -1,4 +1,3 @@
-import pickle
 import json
 import os
 import config
@@ -45,11 +44,9 @@ class WorkStack():
                 f"created: {month_dir} {self.meta['emoji']['all']['calendar']}")
         self.json_path = month_dir / f'{pm.now().format("DD")}.json'
         self.log_path = month_dir / f'{pm.now().format("DD")}.log'
-        self.pickle_path = month_dir / f'{pm.now().format("DD")}.pickle'
         if self.json_path.exists() == False:
             self.json_path.touch()
             self.log_path.touch()
-            self.pickle_path.touch()
             return True
         else:
             return False
@@ -77,8 +74,6 @@ class WorkStack():
     def save(self):
         with open(self.json_path, 'w') as fh:
             json.dump(self.__to_dict__(), fh, ensure_ascii=False)
-        with open(self.pickle_path, 'wb') as fh:
-            pickle.dump(self, fh)
 
     def pop(self, ago=0):
         end_time = pm.now().subtract(minutes=ago)
