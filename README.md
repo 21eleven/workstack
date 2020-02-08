@@ -1,6 +1,6 @@
 # workstack
 
-Time Journaling Software
+time journaling software
 
-Visualize Categories of your time like so
+visualize categories of your time like so
 ![stack graph](.github/graph.png)
